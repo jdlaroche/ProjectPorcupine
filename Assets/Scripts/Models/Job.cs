@@ -193,7 +193,15 @@ public class Job
         {
             foreach (string luaFunction in cbJobWorkedLua.ToList())
             {
-                FurnitureActions.CallFunction(luaFunction, this);
+                DynValue resultVal = FurnitureActions.CallFunction(luaFunction, this);
+                if (resultVal != null)
+                {
+                    string result = resultVal.CastToString();
+                    if (result != null) Debug.Log(result);
+                    else Debug.Log("nothing1");
+                }
+                else Debug.Log("nothing");
+
             }
         }
 

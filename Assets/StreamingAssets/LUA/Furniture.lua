@@ -100,7 +100,7 @@ function Stockpile_UpdateAction( furniture, deltaTime )
 	if( furniture.tile.Inventory != nil and furniture.tile.Inventory.stackSize >= furniture.tile.Inventory.maxStackSize ) then
 		-- We are full!
 		furniture.CancelJobs()
-		return
+		return "Cancelled all job"
 	end
 
 	-- Maybe we already have a job queued up?
@@ -160,20 +160,24 @@ function Stockpile_UpdateAction( furniture, deltaTime )
 
 	j.RegisterJobWorkedCallback("Stockpile_JobWorked")
 	furniture.AddJob( j )
+	return "added job for " .. desInv.maxStackSize .. " more"
 end
 
 function Stockpile_JobWorked(j)
 	j.CancelJob()
+	j.UnregisterJobWorkedCallback("Stockpile_JobWorked")
 
 	-- TODO: Change this when we figure out what we're doing for the all/any pickup job.
 	--values = j.GetInventoryRequirementValues();
 	for k, inv in pairs(j.inventoryRequirements) do
+		stackSize = inv.stackSize
 		if(inv.stackSize > 0) then
 			World.current.inventoryManager.PlaceInventory(j.tile, inv)
 
-			return  -- There should be no way that we ever end up with more than on inventory requirement with stackSize > 0
+			return "Placed " .. stackSize .. " inv" -- There should be no way that we ever end up with more than on inventory requirement with stackSize > 0
 		end
 	end
+	return "Cancelled job"
 end
 
 

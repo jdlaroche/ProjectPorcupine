@@ -157,11 +157,13 @@ public class Character : IXmlSerializable, ISelectable, IContextActionProvider
     
     private void GetNewJob()
     {
+        Debug.Log("Looking for a new job");
         // Get the first job on the queue.
         myJob = World.current.jobQueue.Dequeue();
 
         if (myJob == null)
         {
+            Debug.Log("No job... Waiting");
             myJob = new Job(
                 CurrTile,
                 "Waiting",
@@ -368,7 +370,7 @@ public class Character : IXmlSerializable, ISelectable, IContextActionProvider
                         return false;
                     }
 
-                    Debug.Log("pathAStar returned with length of: " + newPath.Length());
+                    //Debug.Log("pathAStar returned with length of: " + newPath.Length());
 
                     DestTile = newPath.EndTile();
 

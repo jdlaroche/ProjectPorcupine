@@ -27,6 +27,7 @@ public class InventoryManager
     {
         if (inv.stackSize == 0)
         {
+            Debug.Log("Cleaning up inventory (stack size is 0)");
             if (inventories.ContainsKey(inv.objectType))
             {
                 inventories[inv.objectType].Remove(inv);
@@ -76,6 +77,7 @@ public class InventoryManager
 
     public bool PlaceInventory(Job job, Inventory inv)
     {
+        Debug.Log("Placing " + inv.stackSize + "(" + inv.maxStackSize + ") of " + inv.objectType + " on job ");
         if (job.inventoryRequirements.ContainsKey(inv.objectType) == false)
         {
             Debug.LogError("Trying to add inventory to a job that it doesn't want.");
@@ -83,15 +85,18 @@ public class InventoryManager
         }
 
         job.inventoryRequirements[inv.objectType].stackSize += inv.stackSize;
-
+        Debug.Log("Inv req for " + inv.objectType + " : " + job.inventoryRequirements[inv.objectType].stackSize);
         if (job.inventoryRequirements[inv.objectType].maxStackSize < job.inventoryRequirements[inv.objectType].stackSize)
         {
+            Debug.Log("Too much of " + inv.objectType + " for job!");
             inv.stackSize = job.inventoryRequirements[inv.objectType].stackSize - job.inventoryRequirements[inv.objectType].maxStackSize;
             job.inventoryRequirements[inv.objectType].stackSize = job.inventoryRequirements[inv.objectType].maxStackSize;
+            Debug.Log("Keeping " + inv.stackSize+ " of " + inv.objectType);
         }
         else
         {
             inv.stackSize = 0;
+            Debug.Log("Left all inventory on job");
         }
 
         CleanupInventory(inv);
